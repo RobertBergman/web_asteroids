@@ -1,0 +1,36 @@
+# Build directories
+bin/
+obj/
+
+# Emscripten SDK
+emsdk/
+
+# Raylib
+raylib/
+
+# Editor and IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Compiled files
+*.o
+*.a
+*.wasm
+*.js.mem
+*.data
+*.html.mem
+
+# Debug files
+*.dSYM/
+*.pdb
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Logs
+*.log

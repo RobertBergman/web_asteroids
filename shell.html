@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteroids</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        canvas.emscripten {
+            border: 2px solid #0f0;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+        }
+        
+        #status {
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #0f0;
+            border-radius: 5px;
+            min-width: 300px;
+        }
+        
+        #controls {
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 255, 0, 0.05);
+            border: 1px solid #0f0;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            text-shadow: 0 0 10px #0f0;
+            margin: 20px 0;
+        }
+        
+        .control-group {
+            margin: 5px 0;
+        }
+        
+        .key {
+            display: inline-block;
+            padding: 3px 8px;
+            border: 1px solid #0f0;
+            border-radius: 3px;
+            background: rgba(0, 255, 0, 0.1);
+            margin: 0 3px;
+            font-weight: bold;
+        }
+        
+        .spinner {
+            border: 3px solid rgba(0, 255, 0, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #0f0;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .progress-bar {
+            width: 300px;
+            height: 20px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px auto;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0f0 0%, #0a0 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>ASTEROIDS</h1>
+        
+        <div id="status">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+        </div>
+        
+        <canvas class="emscripten" id="canvas" tabindex="1" oncontextmenu="event.preventDefault()"></canvas>
+        
+        <div id="controls" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.9); padding: 20px; border: 2px solid #0f0; border-radius: 10px; z-index: 1000;">
+            <h3 style="text-align: center; margin-bottom: 15px;">Game Controls</h3>
+            <div class="control-group">
+                <span class="key">↑</span>/<span class="key">W</span> Thrust
+            </div>
+            <div class="control-group">
+                <span class="key">←</span>/<span class="key">A</span> Rotate Left
+                <span class="key">→</span>/<span class="key">D</span> Rotate Right
+            </div>
+            <div class="control-group">
+                <span class="key">SPACE</span> Fire
+            </div>
+            <div class="control-group">
+                <span class="key">H</span> Hyperspace Jump
+            </div>
+            <div class="control-group">
+                <span class="key">P</span>/<span class="key">ESC</span> Pause
+            </div>
+            <div class="control-group" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #0f0;">
+                <span class="key">F1</span> Toggle Help
+            </div>
+        </div>
+    </div>
+
+    <script type='text/javascript'>
+        var Module = {
+            preRun: [],
+            postRun: [],
+            canvas: (function() {
+                var canvas = document.getElementById('canvas');
+                canvas.addEventListener("webglcontextlost", function(e) {
+                    alert('WebGL context lost. You will need to reload the page.');
+                    e.preventDefault();
+                }, false);
+                return canvas;
+            })(),
+            
+            setStatus: function(text) {
+                var statusElement = document.getElementById('status');
+                var progressElement = document.getElementById('progress');
+                
+                if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
+                
+                if (text === Module.setStatus.last.text) return;
+                
+                var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+                var now = Date.now();
+                
+                if (m && now - Module.setStatus.last.time < 30) return;
+                
+                Module.setStatus.last.time = now;
+                Module.setStatus.last.text = text;
+                
+                if (m) {
+                    text = m[1];
+                    var value = parseInt(m[2]) * 100;
+                    var total = parseInt(m[4]) * 100;
+                    var percent = (value / total * 100).toFixed(0);
+                    progressElement.style.width = percent + '%';
+                } else {
+                    if (text === '') {
+                        statusElement.style.display = 'none';
+                        document.getElementById('canvas').focus();
+                    } else {
+                        statusElement.innerHTML = '<div class="spinner"></div><p>' + text + '</p>';
+                    }
+                }
+            },
+            
+            totalDependencies: 0,
+            
+            monitorRunDependencies: function(left) {
+                this.totalDependencies = Math.max(this.totalDependencies, left);
+                Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+            }
+        };
+        
+        Module.setStatus('Downloading...');
+        
+        window.onerror = function() {
+            Module.setStatus('Exception thrown, see JavaScript console');
+            Module.setStatus = function(text) {
+                if (text) Module.printErr('[post-exception status] ' + text);
+            };
+        };
+        
+        // Handle F1 key for help
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F1') {
+                e.preventDefault();
+                var controls = document.getElementById('controls');
+                if (controls.style.display === 'none' || controls.style.display === '') {
+                    controls.style.display = 'block';
+                } else {
+                    controls.style.display = 'none';
+                }
+            }
+        });
+    </script>
+    {{{ SCRIPT }}}
+</body>
+</html>
