@@ -1,36 +1,321 @@
+########################
+# C/C++ Build Files
+########################
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+*.elf
+
 # Build directories
 bin/
 obj/
+build/
+out/
+dist/
+target/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
 
-# Emscripten SDK
+########################
+# Emscripten/WebAssembly
+########################
+
+# Emscripten SDK (can be large)
 emsdk/
 
-# Raylib
-raylib/
+# WebAssembly build artifacts
+*.wasm
+*.wasm.map
+*.js
+*.js.mem
+*.js.map
+*.data
+*.data.js
+*.html.mem
+*.asm.js
+*.bc
+*.worker.js
 
-# Editor and IDE files
+# Emscripten cache
+.emscripten_cache/
+emscripten_cache/
+
+# Keep the shell.html template and game source JS
+!shell.html
+!src/**/*.js
+
+########################
+# Raylib
+########################
+
+# Raylib library (if built locally)
+raylib/
+libraylib.a
+libraylib.so
+libraylib.dylib
+libraylib.web.a
+
+########################
+# IDE and Editors
+########################
+
+# Visual Studio Code
 .vscode/
+*.code-workspace
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vcxproj.filters
+*.vcxproj.user
+
+# IntelliJ IDEA
 .idea/
+*.iml
+*.ipr
+*.iws
+
+# Eclipse
+.metadata/
+.settings/
+.project
+.cproject
+.classpath
+
+# Vim
 *.swp
 *.swo
+*.swn
 *~
-.DS_Store
+.*.swp
+.*.swo
+Session.vim
+.netrwhist
+tags
 
-# Compiled files
-*.o
-*.a
-*.wasm
-*.js.mem
-*.data
-*.html.mem
+# Emacs
+*~
+\#*\#
+.\#*
+.emacs.desktop
+.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Kate
+*.kate-swp
+
+########################
+# Operating System
+########################
+
+# macOS
+.DS_Store
+.DS_Store?
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+########################
+# Documentation
+########################
+
+# Doxygen
+html/
+latex/
+docs/html/
+docs/latex/
+
+########################
+# Package Management
+########################
+
+# Node (for any web tooling)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg
+*.egg-info/
+.Python
+env/
+venv/
+.env
+.venv
+
+########################
+# Debugging
+########################
 
 # Debug files
 *.dSYM/
 *.pdb
+*.ilk
+*.idb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*.vspscc
+*.vssscc
 
-# Python cache
-__pycache__/
-*.pyc
+# Profiling
+*.prof
+gmon.out
+callgrind.out.*
+*.gcda
+*.gcno
+*.gcov
 
-# Logs
+# Valgrind
+*.memcheck
+vgcore.*
+
+########################
+# Logs and Temp
+########################
+
 *.log
+*.pid
+*.seed
+*.pid.lock
+logs/
+temp/
+tmp/
+cache/
+
+########################
+# Archives
+########################
+
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.tgz
+*.bz2
+
+########################
+# Backup Files
+########################
+
+*.bak
+*.backup
+*.old
+*.orig
+*.save
+.saves/
+
+########################
+# Testing
+########################
+
+# Unity Test Framework
+test/build/
+test/results/
+
+# CTest
+Testing/
+CTestTestfile.cmake
+DartConfiguration.tcl
+
+########################
+# Project Specific
+########################
+
+# Local configuration files
+config.local
+settings.local
+
+# Game saves (if implemented later)
+saves/
+*.sav
+
+# High score files (if saved locally)
+highscore.dat
+*.score
